@@ -7,6 +7,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.Select;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,16 +27,30 @@ public class JalanSeleniumCrawler {
         WebDriver driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         driver.get(JALAN_URL);
+        login(driver);
+        setAvailability(driver);
+        this.takeScreenshot(driver,"/Users/barunmishra/temp/screenshots/s.png");
+        System.out.println(driver.getTitle());
+    }
+
+    private void setAvailability(WebDriver driver) {
+        driver.findElement(By.className("adjustment")).click();
+        Select seleYear = new Select(driver.findElement(By.name("changeFromYear")));
+        seleYear.selectByValue("2021");
+        Select seleMonth = new Select(driver.findElement(By.name("changeFromMonth")));
+        seleMonth.selectByValue("3");
+        Select seleDay = new Select(driver.findElement(By.name("changeFromDay")));
+        seleDay.selectByValue("30");
+        driver.findElement(By.cssSelector(" img[alt='切替']")).click();
+    }
+
+    private void login(WebDriver driver) {
         driver.findElement(By.name("usrId"));
         driver.findElement(By.name("usrId")).clear();
         driver.findElement(By.name("usrId")).sendKeys(USR);
         driver.findElement(By.name("usrPwd")).clear();
         driver.findElement(By.name("usrPwd")).sendKeys(PASS);
         driver.findElement(By.className("btn")).click();
-        File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String screenshotBase64 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.BASE64);
-        this.takeScreenshot(driver,"/Users/barunmishra/temp/screenshots/s.png");
-        System.out.println(driver.getTitle());
     }
 
     public void takeScreenshot(WebDriver webdriver, String fileWithPath) throws IOException {
