@@ -21,14 +21,17 @@ public class JalanSeleniumCrawler {
     public static final String PASS = "";
 
     private static final Map<String, String> caps = new HashMap<>();
+    private static final String JALAN_SCREENSHOTS_UBUNTU = "/home/barun/temp/screenshots/";
+    private static final String JALAN_SCREENSHOTS_MAC = "/Users/barunmishra/temp/screenshots/";
 
     static {
-        caps.put("2021/03/30","1");
-        caps.put("2021/03/31","2");
+        caps.put("2020/12/01","0");
+        caps.put("2020/12/31","0");
     }
 
     public void crawl() throws IOException {
-        String chromeDriverPath = "/usr/local/Caskroom/chromedriver/85.0.4183.83/chromedriver" ;
+//        String chromeDriverPath = "/usr/local/Caskroom/chromedriver/85.0.4183.83/chromedriver" ;
+        String chromeDriverPath = "/usr/bin/chromedriver" ;
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200","--ignore-certificate-errors", "--silent");
@@ -38,7 +41,7 @@ public class JalanSeleniumCrawler {
         login(driver);
         setAvailability(driver);
 //        setRates(driver);
-        this.takeScreenshot(driver,"/Users/barunmishra/temp/screenshots/s.png");
+        this.takeScreenshot(driver, JALAN_SCREENSHOTS_UBUNTU + "s.png");
         System.out.println(driver.getTitle());
     }
 
@@ -52,6 +55,7 @@ public class JalanSeleniumCrawler {
 
     private void setAvailability(WebDriver driver) {
         driver.findElement(By.className("adjustment")).click();
+//        validateIfCapsRange();
         AtomicInteger capCounter = new AtomicInteger();
         caps.forEach((date, val) -> {
             capCounter.getAndIncrement();
@@ -81,7 +85,7 @@ public class JalanSeleniumCrawler {
                     driver.findElement(By.cssSelector(" img[alt='変更する']")).click();
                     driver.switchTo().window(mainWindow);
                     try {
-                        this.takeScreenshot(driver,"/Users/barunmishra/temp/screenshots/s"+capCounter+".png");
+                        this.takeScreenshot(driver, JALAN_SCREENSHOTS_UBUNTU + "s" +capCounter+".png");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
