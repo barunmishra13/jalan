@@ -9,10 +9,10 @@ import org.openqa.selenium.support.ui.Select;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JalanSeleniumCrawler {
 
@@ -52,7 +52,9 @@ public class JalanSeleniumCrawler {
 
     private void setAvailability(WebDriver driver) {
         driver.findElement(By.className("adjustment")).click();
+        AtomicInteger capCounter = new AtomicInteger();
         caps.forEach((date, val) -> {
+            capCounter.getAndIncrement();
             String[] d = date.split("/");
             String year = d[0];
             String month = d[1];
@@ -78,6 +80,11 @@ public class JalanSeleniumCrawler {
                     driver.findElement(By.cssSelector(" img[title='変更内容を確認する']")).click();
                     driver.findElement(By.cssSelector(" img[alt='変更する']")).click();
                     driver.switchTo().window(mainWindow);
+                    try {
+                        this.takeScreenshot(driver,"/Users/barunmishra/temp/screenshots/s"+capCounter+".png");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
