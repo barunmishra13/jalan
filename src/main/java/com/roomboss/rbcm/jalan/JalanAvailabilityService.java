@@ -15,7 +15,7 @@ public class JalanAvailabilityService extends JalanBaseService {
 
 
     public void setAvailability(TreeMap<LocalDate, Integer> caps, String property, String roomType) throws Exception {
-        login(driver, property);
+        login(property);
         driver.findElement(By.className("adjustment")).click();
         if (isCapsRange(caps)) {
             driver.findElement(By.cssSelector(" img[alt='室数カレンダー']")).click();
@@ -32,7 +32,7 @@ public class JalanAvailabilityService extends JalanBaseService {
                 setCapsForDate(driver, capCounter, val);
             });
         }
-        this.takeScreenshot(driver, JALAN_SCREENSHOTS_UBUNTU + "s.png");
+        this.takeScreenshot(JALAN_SCREENSHOTS_UBUNTU + "s.png");
     }
 
     private boolean isCapsRange(TreeMap<LocalDate, Integer> caps) {
@@ -65,7 +65,7 @@ public class JalanAvailabilityService extends JalanBaseService {
                 if(!hasError) {
                     driver.findElement(By.cssSelector(" img[alt='変更する']")).click();
                     driver.switchTo().window(mainWindow);
-                    this.takeScreenshot(driver, JALAN_SCREENSHOTS_UBUNTU + "s_month.png");
+                    this.takeScreenshot(JALAN_SCREENSHOTS_UBUNTU + "s_month.png");
                 }
                 else {
                     throw new Exception("Error while updating");
@@ -85,7 +85,7 @@ public class JalanAvailabilityService extends JalanBaseService {
                 driver.findElement(By.cssSelector(" img[title='変更内容を確認する']")).click();
                 driver.findElement(By.cssSelector(" img[alt='変更する']")).click();
                 driver.switchTo().window(mainWindow);
-                this.takeScreenshot(driver, JALAN_SCREENSHOTS_UBUNTU + "s" + capCounter + ".png");
+                this.takeScreenshot(JALAN_SCREENSHOTS_UBUNTU + "s" + capCounter + ".png");
             }
         }
     }

@@ -6,20 +6,14 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.Select;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public abstract class JalanBaseService {
@@ -34,26 +28,25 @@ public abstract class JalanBaseService {
     protected WebDriver driver;
 
     @PostConstruct
-    public void initialize()
-     {
-        jalanCredentialsMap.put("Y64351", new JalanCredentials("Y64351", "1212heritage?"));
+    public void initialize() {
+        jalanCredentialsMap.put("Y64351", new JalanCredentials("Y64351", ""));
         setupChromeDriver();
     }
 
     private void setupChromeDriver() {
         System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_PATH_UBUNTU);
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200","--ignore-certificate-errors", "--silent");
+        options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors", "--silent");
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
-    private void highLighterMethod(WebDriver driver, WebElement element){
+    protected void highLighterMethod(WebElement element) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].setAttribute('style', 'background: green; border: 3px solid blue;');", element);
     }
 
-    protected void login(WebDriver driver, String propertyCode) throws Exception {
+    protected void login(String propertyCode) throws Exception {
         JalanCredentials jalanCredentials = jalanCredentialsMap.get(propertyCode);
         if (jalanCredentials != null) {
             driver.get(JALAN_URL);
@@ -63,15 +56,19 @@ public abstract class JalanBaseService {
             driver.findElement(By.name("usrPwd")).clear();
             driver.findElement(By.name("usrPwd")).sendKeys(jalanCredentials.password);
             driver.findElement(By.className("btn")).click();
-        }
-        else {
+        } else {
             throw new Exception("Property Not Set Up");
         }
 
     }
 
-    protected void takeScreenshot(WebDriver webdriver, String fileWithPath) {
-        File scrFile = ((TakesScreenshot)webdriver).getScreenshotAs(OutputType.FILE);
+    protected void logout() {
+        driver.findElement(By.linkText("ログアウト")).click();
+        driver.quit();
+    }
+
+    protected void takeScreenshot(String fileWithPath) {
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(scrFile, new File(fileWithPath));
         } catch (IOException e) {
